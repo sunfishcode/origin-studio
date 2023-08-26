@@ -15,7 +15,8 @@
 
 origin-stdio is an alternative [`std`]-like implementation built on [`origin`].
 
-At this time, it only works on Linux, requires Rust nightly, lacks full `std`
+At this time, it only works on Linux (x86-64, aarch64, riscv64, and perhaps
+even 32-bit x86 and arm), requires Rust nightly, lacks full `std`
 compatibility, and is overall experimental. But it supports threads and stuff.
 
 Quick start:
@@ -27,20 +28,40 @@ cargo add origin_studio
 cargo add compiler_builtins --features=mem
 echo 'fn main() { println!("cargo:rustc-link-arg=-nostartfiles"); }' > build.rs
 sed -i '1s/^/#![no_std]\n#![no_main]\norigin_studio::no_problem!();\n\n/' src/main.rs
-cargo +nightly run --quiet
+cargo run --quiet
 ```
 
 This will produce a crate and print "Hello, world!".
 
 Yes, you might say, I could have already done that, with just the first and
 last commands. But this version uses `origin` to start and stop the program,
-and [`rustix`] to do the printing. And beyond that, it uses [`origin`] to
-start and stop threads, [`rustix-futex-sync`] to do locking for threads,
-and [`rustix-dlmalloc`] to do memory allocation, so it doesn't use libc at
-all.
+and [`rustix`] to do the printing.
+
+And beyond that, origin-studio uses `origin` to start and stop threads,
+[`rustix-futex-sync`] to do locking for threads, and [`rustix-dlmalloc`] to do
+memory allocation, so it doesn't use libc at all.
+
+## Similar crates
+
+Other alternative implementations of std include [steed], [tiny-std] and
+[veneer].
+
+[mustang] is a crate that uses origin to build a libc implementation that
+can slide underneath existing std builds, rather than having its own std
+implementation.
+
+## Why?
+
+Right now, this is a demo of how to use `origin`. If you're interested in
+seeing this grow into something specific, or interested in seeing projects
+which might be inspired by this, please reach out!
 
 [`std`]: https://doc.rust-lang.org/stable/std/
 [`origin`]: https://docs.rs/origin/latest/origin/
 [`rustix`]: https://docs.rs/rustix/latest/rustix/
-[`rustix-futex-sync`]: https://docs.rs/rustix-futex-sync/latest/rustix-futex-sync/
-[`rustix-dlmalloc`]: https://docs.rs/rustix-dlmalloc/latest/rustix-dlmalloc/
+[`rustix-futex-sync`]: https://docs.rs/rustix-futex-sync/latest/rustix_futex_sync/
+[`rustix-dlmalloc`]: https://docs.rs/rustix-dlmalloc/latest/rustix_dlmalloc/
+[steed]: https://github.com/japaric/steed
+[tiny-std]: https://github.com/MarcusGrass/tiny-std
+[veneer]: https://crates.io/crates/veneer
+[mustang]: https://github.com/sunfishcode/mustang
