@@ -39,7 +39,7 @@ impl Drop for JoinHandle {
 
 pub fn spawn<F>(f: F) -> JoinHandle
 where
-    F: FnOnce() -> () + Send + 'static,
+    F: FnOnce() + Send + 'static,
 {
     let thread = origin::create_thread(
         Box::new(|| {
