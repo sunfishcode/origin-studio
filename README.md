@@ -38,16 +38,17 @@ last commands. But this version uses `origin` to start and stop the program,
 and [`rustix`] to do the printing.
 
 And beyond that, origin-studio uses `origin` to start and stop threads,
-[`rustix-futex-sync`] to do locking for threads, and [`rustix-dlmalloc`] to do
-memory allocation, so it doesn't use libc at all.
+[`rustix-futex-sync`] and [`lock_api`] to do locking for threads,
+[`rustix-dlmalloc`] to do memory allocation, and [`unwinding`] to do stack
+unwinding, so it doesn't use libc at all.
 
 ## Similar crates
 
 Other alternative implementations of std include [steed], [tiny-std] and
 [veneer].
 
-[mustang] is a crate that uses origin to build a libc implementation that
-can slide underneath existing std builds, rather than having its own std
+[mustang] is a crate that uses origin to build a libc implementation that can
+slide underneath existing std builds, rather than having its own std
 implementation.
 
 ## Why?
@@ -61,6 +62,8 @@ which might be inspired by this, please reach out!
 [`rustix`]: https://docs.rs/rustix/latest/rustix/
 [`rustix-futex-sync`]: https://docs.rs/rustix-futex-sync/latest/rustix_futex_sync/
 [`rustix-dlmalloc`]: https://docs.rs/rustix-dlmalloc/latest/rustix_dlmalloc/
+[`lock_api`]: https://docs.rs/lock_api/latest/lock_api/
+[`unwinding`]: https://docs.rs/unwinding/latest/unwinding/
 [steed]: https://github.com/japaric/steed
 [tiny-std]: https://github.com/MarcusGrass/tiny-std
 [veneer]: https://crates.io/crates/veneer
