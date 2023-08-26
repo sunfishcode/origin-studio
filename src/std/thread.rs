@@ -1,26 +1,16 @@
 use crate::std::io;
-use core::num::NonZeroUsize;
 use alloc::boxed::Box;
+use core::num::NonZeroUsize;
 
-// FIXME: When bytecodealliance/rustix#796 lands, switch to rustix::thread.
-pub struct ThreadId(rustix::process::Pid);
+// Rust does't need the OS tids, it just needs unique ids, so we just use the
+// raw `Thread` value casted to `usize`.
+pub struct ThreadId(usize);
 
 pub struct Thread(origin::Thread);
 
 impl Thread {
     pub fn id(&self) -> ThreadId {
-        //FIXME: origin::thread_id(self.0)
-        todo!()
-    }
-}
-
-pub(crate) struct GetThreadId;
-
-unsafe impl rustix_futex_sync::lock_api::GetThreadId for GetThreadId {
-    const INIT: Self = Self;
-
-    fn nonzero_thread_id(&self) -> NonZeroUsize {
-        origin::current_thread_id().as_raw_nonzero().try_into().unwrap()
+        ThreadId(self.0.to_raw() as usize)
     }
 }
 
@@ -67,3 +57,18 @@ where
 pub fn current() -> Thread {
     Thread(origin::current_thread())
 }
+
+pub(crate) struct GetThreadId;
+
+unsafe impl rustix_futex_sync::lock_api::GetThreadId for GetThreadId {
+    const INIT: Self = Self;
+
+    fn nonzero_thread_id(&self) -> NonZeroUsize {
+        // TODO: Use `origin::currrent_thread().addr()` once that's stable.
+        NonZeroUsize::new(origin::current_thread().to_raw_non_null().as_ptr() as usize).unwrap()
+    }
+}
+
+pub(crate) type ReentrantMutex<T> = rustix_futex_sync::ReentrantMutex<GetThreadId, T>;
+pub(crate) type ReentrantMutexGuard<'a, T> =
+    rustix_futex_sync::ReentrantMutexGuard<'a, GetThreadId, T>;

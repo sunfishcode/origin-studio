@@ -1,6 +1,5 @@
-use rustix_futex_sync::{ReentrantMutexGuard, ReentrantMutex};
+use crate::std::thread::{ReentrantMutex, ReentrantMutexGuard};
 use core::fmt::{self, Arguments};
-use crate::std::thread::GetThreadId;
 
 pub type Error = rustix::io::Errno;
 
@@ -64,9 +63,9 @@ pub trait Write {
     }
 }
 
-pub struct StdoutLock<'a>(ReentrantMutexGuard<'a, GetThreadId, ()>);
+pub struct StdoutLock<'a>(ReentrantMutexGuard<'a, ()>);
 
-static STDOUT_LOCK: ReentrantMutex<GetThreadId, ()> = ReentrantMutex::new(());
+static STDOUT_LOCK: ReentrantMutex<()> = ReentrantMutex::new(());
 
 pub struct Stdout(());
 
@@ -115,9 +114,9 @@ impl<'a> core::fmt::Write for StdoutLock<'a> {
     }
 }
 
-pub struct StderrLock<'a>(ReentrantMutexGuard<'a, GetThreadId, ()>);
+pub struct StderrLock<'a>(ReentrantMutexGuard<'a, ()>);
 
-static STDERR_LOCK: ReentrantMutex<GetThreadId, ()> = ReentrantMutex::new(());
+static STDERR_LOCK: ReentrantMutex<()> = ReentrantMutex::new(());
 
 pub struct Stderr(());
 
