@@ -29,7 +29,11 @@ static GLOBAL_ALLOCATOR: rustix_dlmalloc::GlobalDlmalloc = rustix_dlmalloc::Glob
 extern "C" fn main(argc: i32, argv: *mut *mut u8, envp: *mut *mut u8) -> i32 {
     #[cfg(feature = "std")]
     unsafe {
-        crate::std::env::MAIN_ARGS = crate::std::env::MainArgs { argc, argv, envp };
+        crate::init::sanitize_stdio_fds();
+        crate::init::store_args(argc, argv, envp);
+    }
+    unsafe {
+        crate::init::reset_sigpipe();
     }
 
     // Call the function expanded by the macro in the user's module to call the
@@ -95,6 +99,8 @@ macro_rules! no_problem {
         use $crate::{eprint, eprintln, print, println};
     };
 }
+
+mod init;
 
 // Provide a std-like API.
 #[cfg(feature = "std")]
