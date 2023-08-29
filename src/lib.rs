@@ -1,3 +1,4 @@
+#![doc = include_str!("../README.md")]
 #![no_std]
 #![allow(internal_features)]
 #![feature(lang_items)]
