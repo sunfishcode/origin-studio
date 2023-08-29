@@ -20,7 +20,7 @@ pub(crate) unsafe fn store_args(argc: i32, argv: *mut *mut u8, envp: *mut *mut u
 
 pub(crate) unsafe fn reset_sigpipe() {
     use core::mem::zeroed;
-    use origin::{sig_ign, sigaction, Sigaction, Signal, SA_RESTART};
+    use origin::signal::{sig_ign, sigaction, Sigaction, Signal, SA_RESTART};
 
     let mut action = zeroed::<Sigaction>();
     action.sa_handler_kernel = sig_ign();
