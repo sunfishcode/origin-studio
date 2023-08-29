@@ -34,6 +34,7 @@ extern "C" fn main(argc: i32, argv: *mut *mut u8, envp: *mut *mut u8) -> i32 {
     }
     unsafe {
         crate::init::reset_sigpipe();
+        crate::stack_overflow::init();
     }
 
     // Call the function expanded by the macro in the user's module to call the
@@ -101,6 +102,7 @@ macro_rules! no_problem {
 }
 
 mod init;
+mod stack_overflow;
 
 // Provide a std-like API.
 #[cfg(feature = "std")]
