@@ -15,9 +15,9 @@
 
 origin-stdio is an alternative [`std`]-like implementation built on [`origin`].
 
-At this time, it only works on Linux (x86-64, aarch64, riscv64, and perhaps
-even 32-bit x86 and arm), requires Rust nightly, lacks full `std`
-compatibility, and is overall experimental. But it supports threads and stuff.
+At this time, it only works on Linux (x86-64, aarch64, riscv64, 32-bit x86),
+requires Rust nightly, lacks full `std` compatibility, and is overall
+experimental. But it supports threads and stuff.
 
 Quick start:
 
