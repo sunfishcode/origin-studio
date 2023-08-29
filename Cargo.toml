@@ -4,7 +4,7 @@ version = "0.3.1"
 authors = [
     "Dan Gohman <dev@sunfishcode.online>",
 ]
-description = "Program startup and thread support written in Rust"
+description = "An alternative `std`-like implementation built on origin"
 documentation = "https://docs.rs/origin-studio"
 license = "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT"
 repository = "https://github.com/sunfishcode/origin-studio"
