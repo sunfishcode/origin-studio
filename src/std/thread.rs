@@ -10,7 +10,7 @@ pub struct Thread(origin::thread::Thread);
 
 impl Thread {
     pub fn id(&self) -> ThreadId {
-        ThreadId(self.0.to_raw() as usize)
+        ThreadId(self.0.to_raw().addr())
     }
 }
 
@@ -68,8 +68,7 @@ unsafe impl rustix_futex_sync::lock_api::GetThreadId for GetThreadId {
     const INIT: Self = Self;
 
     fn nonzero_thread_id(&self) -> NonZeroUsize {
-        // TODO: Use `origin::thread::currrent_thread().addr()` once that's stable.
-        NonZeroUsize::new(origin::thread::current_thread().to_raw_non_null().as_ptr() as usize).unwrap()
+        origin::thread::current_thread().to_raw_non_null().addr()
     }
 }
 

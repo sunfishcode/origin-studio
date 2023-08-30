@@ -47,7 +47,9 @@ impl Drop for Handler {
 use core::mem;
 use core::ptr;
 
-use origin::signal::{sigaction, SigDfl, Sigaction, Siginfo, Signal, SA_ONSTACK, SA_SIGINFO, SIGSTKSZ, SS_DISABLE};
+use origin::signal::{
+    sigaction, SigDfl, Sigaction, Siginfo, Signal, SA_ONSTACK, SA_SIGINFO, SIGSTKSZ, SS_DISABLE,
+};
 use rustix::mm::{mmap_anonymous, munmap, MapFlags, ProtFlags};
 use rustix::runtime::sigaltstack;
 
@@ -76,16 +78,18 @@ use rustix::param::page_size;
 // signal handler to work. For a more detailed explanation see the
 // comments on #26458.
 unsafe extern "C" fn signal_handler(signum: Signal, info: *mut Siginfo, _data: *mut c_void) {
-    let (stack_addr, _stack_size, guard_size) = origin::thread::thread_stack(origin::thread::current_thread());
-    let guard_start = stack_addr as usize - guard_size;
-    let guard_end = stack_addr as usize;
+    let (stack_addr, _stack_size, guard_size) =
+        origin::thread::thread_stack(origin::thread::current_thread());
+    let guard_end = stack_addr.addr();
+    let guard_start = guard_end - guard_size;
 
     let addr = (*info)
         .__bindgen_anon_1
         .__bindgen_anon_1
         ._sifields
         ._sigfault
-        ._addr as usize;
+        ._addr
+        .addr();
 
     // If the faulting address is within the guard page, then we print a
     // message saying so and abort.
@@ -116,7 +120,9 @@ pub unsafe fn init() {
         // Configure our signal handler if one is not already set.
         if action.sa_handler_kernel == SigDfl {
             action.sa_flags = SA_SIGINFO | SA_ONSTACK;
-            action.sa_handler_kernel = Some(mem::transmute(signal_handler as unsafe extern "C" fn(_, _, _)));
+            action.sa_handler_kernel = Some(mem::transmute(
+                signal_handler as unsafe extern "C" fn(_, _, _),
+            ));
             let _ = sigaction(signal, Some(action));
             NEED_ALTSTACK.store(true, Ordering::Relaxed);
         }
