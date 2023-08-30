@@ -1,8 +1,11 @@
 #![doc = include_str!("../README.md")]
-#![no_std]
 #![allow(internal_features)]
 #![feature(lang_items)]
 #![feature(core_intrinsics)]
+#![feature(strict_provenance)]
+#![deny(fuzzy_provenance_casts)]
+#![deny(lossy_provenance_casts)]
+#![no_std]
 
 #[cfg(feature = "alloc")]
 extern crate alloc;
