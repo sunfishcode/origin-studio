@@ -1,5 +1,8 @@
+#[cfg(feature = "thread")]
 use crate::std::thread::{ReentrantMutex, ReentrantMutexGuard};
 use core::fmt::{self, Arguments};
+#[cfg(not(feature = "thread"))]
+use core::marker::PhantomData;
 
 pub type Error = rustix::io::Errno;
 
@@ -63,8 +66,15 @@ pub trait Write {
     }
 }
 
-pub struct StdoutLock<'a>(ReentrantMutexGuard<'a, ()>);
+pub struct StdoutLock<'a> {
+    #[cfg(feature = "thread")]
+    _lock: ReentrantMutexGuard<'a, ()>,
 
+    #[cfg(not(feature = "thread"))]
+    _phantom: PhantomData<&'a ()>,
+}
+
+#[cfg(feature = "thread")]
 static STDOUT_LOCK: ReentrantMutex<()> = ReentrantMutex::new(());
 
 pub struct Stdout(());
@@ -75,7 +85,13 @@ pub fn stdout() -> Stdout {
 
 impl Stdout {
     pub fn lock(&self) -> StdoutLock<'static> {
-        StdoutLock(STDOUT_LOCK.lock())
+        StdoutLock {
+            #[cfg(feature = "thread")]
+            _lock: STDOUT_LOCK.lock(),
+
+            #[cfg(not(feature = "thread"))]
+            _phantom: PhantomData,
+        }
     }
 }
 
@@ -91,11 +107,11 @@ impl Write for Stdout {
 
 impl<'a> Write for StdoutLock<'a> {
     fn write(&mut self, buf: &[u8]) -> Result<usize> {
-        Stdout(*self.0).write(buf)
+        Stdout(()).write(buf)
     }
 
     fn flush(&mut self) -> Result<()> {
-        Stdout(*self.0).flush()
+        Stdout(()).flush()
     }
 }
 
@@ -110,12 +126,19 @@ impl core::fmt::Write for Stdout {
 
 impl<'a> core::fmt::Write for StdoutLock<'a> {
     fn write_str(&mut self, s: &str) -> core::fmt::Result {
-        Stdout(*self.0).write_str(s)
+        Stdout(()).write_str(s)
     }
 }
 
-pub struct StderrLock<'a>(ReentrantMutexGuard<'a, ()>);
+pub struct StderrLock<'a> {
+    #[cfg(feature = "thread")]
+    _lock: ReentrantMutexGuard<'a, ()>,
 
+    #[cfg(not(feature = "thread"))]
+    _phantom: PhantomData<&'a ()>,
+}
+
+#[cfg(feature = "thread")]
 static STDERR_LOCK: ReentrantMutex<()> = ReentrantMutex::new(());
 
 pub struct Stderr(());
@@ -126,7 +149,13 @@ pub fn stderr() -> Stderr {
 
 impl Stderr {
     pub fn lock(&self) -> StderrLock<'static> {
-        StderrLock(STDERR_LOCK.lock())
+        StderrLock {
+            #[cfg(feature = "thread")]
+            _lock: STDERR_LOCK.lock(),
+
+            #[cfg(not(feature = "thread"))]
+            _phantom: PhantomData,
+        }
     }
 }
 
@@ -142,11 +171,11 @@ impl Write for Stderr {
 
 impl<'a> Write for StderrLock<'a> {
     fn write(&mut self, buf: &[u8]) -> Result<usize> {
-        Stderr(*self.0).write(buf)
+        Stderr(()).write(buf)
     }
 
     fn flush(&mut self) -> Result<()> {
-        Stderr(*self.0).flush()
+        Stderr(()).flush()
     }
 }
 
@@ -161,6 +190,6 @@ impl core::fmt::Write for Stderr {
 
 impl<'a> core::fmt::Write for StderrLock<'a> {
     fn write_str(&mut self, s: &str) -> core::fmt::Result {
-        Stderr(*self.0).write_str(s)
+        Stderr(()).write_str(s)
     }
 }

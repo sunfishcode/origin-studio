@@ -43,9 +43,8 @@ where
 {
     let thread = origin::thread::create_thread(
         Box::new(|| {
-            unsafe {
-                let _handler = crate::stack_overflow::Handler::new();
-            }
+            #[cfg(feature = "stack-overflow")]
+            let _handler = unsafe { crate::stack_overflow::Handler::new() };
 
             f();
             None

@@ -13,21 +13,29 @@ keywords = ["linux"]
 categories = ["no-std"]
 
 [dependencies]
-atomic-dbg = { version = "0.1.8", default-features = false }
-origin = { version = "0.12.0", default-features = false, features = ["origin-program", "origin-thread", "origin-signal", "origin-start"] }
-rustix = { version = "0.38.10", default-features = false, features = ["stdio"] }
-rustix-dlmalloc = { version = "0.1.0", features = ["global"] }
+atomic-dbg = { version = "0.1.8", default-features = false, optional = true }
+origin = { version = "0.12.0", default-features = false, features = ["origin-program", "origin-signal", "origin-start"] }
+rustix = { version = "0.38.10", default-features = false, features = ["stdio", "mm"] }
+rustix-dlmalloc = { version = "0.1.0", features = ["global"], optional = true }
 rustix-futex-sync = { version = "0.1.3", features = ["atomic_usize"] }
 compiler_builtins = { version = "0.1.101", features = ["mem"] }
 
 [features]
-default = ["std"]
+default = ["std", "thread"]
 
 # Provide a `std`-like API.
 std = ["alloc"]
 
 # Provide the `alloc` API.
-alloc = []
+alloc = ["rustix-dlmalloc", "origin/alloc"]
+
+# Support threads
+thread = ["origin/origin-thread"]
 
 # Enable debug logging.
-log = ["origin/log", "origin/atomic-dbg"]
+log = ["origin/log", "atomic-dbg", "origin/atomic-dbg"]
+
+[patch.crates-io]
+# Temporary override.
+rustix = { git = "https://github.com/bytecodealliance/rustix", rev = "2c56e44190eb97b5fefabe6cba4f86c50a01db1e" }
+origin = { git = "https://github.com/sunfishcode/origin", rev = "44e6b6af26eb14462b6fe8b15f9cf8ca5720bb66" }

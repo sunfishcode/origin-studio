@@ -35,6 +35,7 @@ fn panic(panic: &core::panic::PanicInfo<'_>) -> ! {
 extern "C" fn eh_personality() {}
 
 // <https://doc.rust-lang.org/stable/std/alloc/trait.GlobalAlloc.html>
+#[cfg(feature = "alloc")]
 #[global_allocator]
 static GLOBAL_ALLOCATOR: rustix_dlmalloc::GlobalDlmalloc = rustix_dlmalloc::GlobalDlmalloc;
 
@@ -50,6 +51,7 @@ extern "C" fn main(argc: i32, argv: *mut *mut u8, envp: *mut *mut u8) -> i32 {
     }
     unsafe {
         crate::init::reset_sigpipe();
+        #[cfg(feature = "stack-overflow")]
         crate::stack_overflow::init();
     }
 
@@ -62,7 +64,7 @@ extern "C" fn main(argc: i32, argv: *mut *mut u8, envp: *mut *mut u8) -> i32 {
         origin_studio_no_problem();
     }
 
-    rustix::process::EXIT_SUCCESS
+    rustix::runtime::EXIT_SUCCESS
 }
 
 #[cfg(not(feature = "alloc"))]
@@ -118,6 +120,7 @@ macro_rules! no_problem {
 }
 
 mod init;
+#[cfg(feature = "stack-overflow")]
 mod stack_overflow;
 
 // Provide a std-like API.
