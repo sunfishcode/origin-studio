@@ -31,6 +31,8 @@ static GLOBAL_ALLOCATOR: rustix_dlmalloc::GlobalDlmalloc = rustix_dlmalloc::Glob
 // Origin calls this.
 #[no_mangle]
 extern "C" fn main(argc: i32, argv: *mut *mut u8, envp: *mut *mut u8) -> i32 {
+    let _ = (argc, argv, envp);
+
     #[cfg(feature = "std")]
     unsafe {
         crate::init::sanitize_stdio_fds();
