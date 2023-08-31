@@ -16,7 +16,17 @@ extern crate origin;
 // <https://doc.rust-lang.org/nomicon/panic-handler.html>
 #[panic_handler]
 fn panic(panic: &core::panic::PanicInfo<'_>) -> ! {
-    eprintln!("{}", panic);
+    let _ = panic;
+
+    #[cfg(feature = "std")]
+    {
+        eprintln!("{}", panic);
+    }
+    #[cfg(all(not(feature = "std"), feature = "atomic-dbg"))]
+    {
+        atomic_dbg::eprintln!("{}", panic);
+    }
+
     core::intrinsics::abort();
 }
 
