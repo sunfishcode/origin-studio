@@ -21,7 +21,7 @@ rustix-futex-sync = { version = "0.1.3", features = ["atomic_usize"] }
 compiler_builtins = { version = "0.1.101", features = ["mem"] }
 
 [features]
-default = ["std", "thread"]
+default = ["std", "thread", "stack-overflow"]
 
 # Provide a `std`-like API.
 std = ["alloc"]
@@ -34,3 +34,6 @@ thread = ["origin/origin-thread"]
 
 # Enable debug logging.
 log = ["origin/log", "atomic-dbg", "origin/atomic-dbg"]
+
+# Enable Rust's stack overflow reporting code.
+stack-overflow = []
