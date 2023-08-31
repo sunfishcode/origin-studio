@@ -4,6 +4,7 @@ pub mod env;
 pub mod io;
 pub mod prelude;
 pub mod sync;
+#[cfg(feature = "thread")]
 pub mod thread;
 
 pub use crate::alloc::{
