@@ -10,10 +10,18 @@ pub type Result<T> = core::result::Result<T, Error>;
 
 pub trait Read {
     fn read(&mut self, buf: &mut [u8]) -> Result<usize>;
+
+    fn is_read_vectored(&self) -> bool {
+        false
+    }
 }
 
 pub trait Write {
     fn write(&mut self, buf: &[u8]) -> Result<usize>;
+
+    fn is_write_vectored(&self) -> bool {
+        false
+    }
 
     fn flush(&mut self) -> Result<()>;
 
@@ -192,4 +200,24 @@ impl<'a> core::fmt::Write for StderrLock<'a> {
     fn write_str(&mut self, s: &str) -> core::fmt::Result {
         Stderr(()).write_str(s)
     }
+}
+
+pub trait Seek {
+    fn seek(&mut self, pos: SeekFrom) -> Result<u64>;
+
+    fn rewind(&mut self) -> Result<()> {
+        self.seek(SeekFrom::Start(0))?;
+        Ok(())
+    }
+
+    fn stream_position(&mut self) -> Result<u64> {
+        self.seek(SeekFrom::Current(0))
+    }
+}
+
+#[derive(Copy, Clone, Eq, PartialEq, Debug)]
+pub enum SeekFrom {
+    Start(u64),
+    End(i64),
+    Current(i64),
 }
