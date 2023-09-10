@@ -11,3 +11,7 @@ pub use crate::alloc::{
     alloc, borrow, boxed, collections, ffi, fmt, rc, slice, str, string, task, vec,
 };
 pub use core::*;
+
+mod sealed {
+    pub trait Sealed {}
+}
