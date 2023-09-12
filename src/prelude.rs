@@ -1,8 +1,10 @@
+//! The Rust Prelude
+
 pub mod v1 {
-    pub use alloc::borrow::ToOwned;
-    pub use alloc::boxed::Box;
-    pub use alloc::string::{String, ToString};
-    pub use alloc::vec::Vec;
+    pub use crate::borrow::ToOwned;
+    pub use crate::boxed::Box;
+    pub use crate::string::{String, ToString};
+    pub use crate::vec::Vec;
     pub use core::prelude::v1::*;
 }
 pub mod rust_2015 {

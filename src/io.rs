@@ -1,5 +1,7 @@
+//! Traits, helpers, and type definitions for core I/O functionality.
+
 #[cfg(feature = "thread")]
-use crate::std::thread::{ReentrantMutex, ReentrantMutexGuard};
+use crate::thread::{ReentrantMutex, ReentrantMutexGuard};
 use core::fmt::{self, Arguments};
 #[cfg(not(feature = "thread"))]
 use core::marker::PhantomData;

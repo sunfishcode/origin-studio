@@ -15,7 +15,7 @@ pub(crate) fn sanitize_stdio_fds() {
 
 #[cfg(feature = "std")]
 pub(crate) unsafe fn store_args(argc: i32, argv: *mut *mut u8, envp: *mut *mut u8) {
-    crate::std::env::MAIN_ARGS = crate::std::env::MainArgs { argc, argv, envp };
+    crate::env::MAIN_ARGS = crate::env::MainArgs { argc, argv, envp };
 }
 
 pub(crate) unsafe fn reset_sigpipe() {

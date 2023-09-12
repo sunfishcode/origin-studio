@@ -5,7 +5,7 @@
 macro_rules! rtprintpanic {
     ($($t:tt)*) => {
         #[cfg(feature = "std")]
-        let _ = $crate::std::io::Write::write_fmt(&mut $crate::std::io::stderr(), format_args!($($t)*));
+        let _ = $crate::io::Write::write_fmt(&mut $crate::io::stderr(), format_args!($($t)*));
     }
 }
 
@@ -97,7 +97,7 @@ unsafe extern "C" fn signal_handler(signum: Signal, info: *mut Siginfo, _data: *
         rtprintpanic!(
             "\nthread '{}' has overflowed its stack\n",
             rustix::thread::name()
-                .map(|c_str| alloc::format!("{:?}", c_str))
+                .map(|c_str| crate_alloc::format!("{:?}", c_str))
                 .unwrap_or("<unknown>".into())
         );
         rtabort!("stack overflow");
@@ -144,9 +144,9 @@ unsafe fn get_stackp() -> *mut c_void {
     // OpenBSD requires this flag for stack mapping
     // otherwise the said mapping will fail as a no-op on most systems
     // and has a different meaning on FreeBSD
-    #[cfg(any(target_os = "openbsd", target_os = "netbsd", target_os = "linux",))]
+    #[cfg(any(target_os = "openbsd", target_os = "netbsd", target_os = "linux"))]
     let flags = MapFlags::PRIVATE | MapFlags::STACK;
-    #[cfg(not(any(target_os = "openbsd", target_os = "netbsd", target_os = "linux",)))]
+    #[cfg(not(any(target_os = "openbsd", target_os = "netbsd", target_os = "linux")))]
     let flags = MapFlags::PRIVATE;
     let stackp = match mmap_anonymous(
         ptr::null_mut(),

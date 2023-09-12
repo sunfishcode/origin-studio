@@ -1,5 +1,7 @@
-use crate::std::io;
-use alloc::boxed::Box;
+//! Native threads.
+
+use crate::boxed::Box;
+use crate::io;
 use core::num::NonZeroUsize;
 
 // Rust does't need the OS tids, it just needs unique ids, so we just use the

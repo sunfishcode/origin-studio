@@ -13,27 +13,29 @@ keywords = ["linux"]
 categories = ["no-std"]
 
 [dependencies]
-atomic-dbg = { version = "0.1.8", default-features = false, optional = true }
 origin = { version = "0.13.0", default-features = false, features = ["origin-program", "origin-signal", "origin-start"] }
-rustix = { version = "0.38.11", default-features = false, features = ["stdio", "mm"] }
+rustix = { version = "0.38.11", default-features = false, optional = true }
 rustix-dlmalloc = { version = "0.1.0", features = ["global"], optional = true }
-rustix-futex-sync = { version = "0.1.3", features = ["atomic_usize"] }
+rustix-futex-sync = { version = "0.1.3", features = ["atomic_usize"], optional = true }
+atomic-dbg = { version = "0.1.8", default-features = false, optional = true }
+
+[dev-dependencies]
 compiler_builtins = { version = "0.1.101", features = ["mem"] }
 
 [features]
 default = ["std", "thread", "stack-overflow"]
 
 # Provide a `std`-like API.
-std = ["alloc"]
+std = ["alloc", "rustix/stdio", "rustix/fs"]
 
 # Provide the `alloc` API.
 alloc = ["rustix-dlmalloc", "origin/alloc"]
 
 # Support threads
-thread = ["origin/origin-thread"]
+thread = ["origin/origin-thread", "rustix-futex-sync"]
 
 # Enable debug logging.
 log = ["origin/log", "atomic-dbg", "origin/atomic-dbg"]
 
 # Enable Rust's stack overflow reporting code.
-stack-overflow = []
+stack-overflow = ["rustix/mm"]
