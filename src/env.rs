@@ -1,3 +1,5 @@
+//! Inspection and manipulation of the process’s environment.
+
 use core::ffi::CStr;
 use core::ptr::null_mut;
 use core::slice;

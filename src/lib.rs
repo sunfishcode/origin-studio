@@ -8,7 +8,7 @@
 #![no_std]
 
 #[cfg(feature = "alloc")]
-extern crate alloc;
+extern crate alloc as crate_alloc;
 
 // Ensure that origin is linked in.
 extern crate origin;
@@ -67,6 +67,7 @@ unsafe fn origin_main(argc: i32, argv: *mut *mut u8, envp: *mut *mut u8) -> i32 
     rustix::runtime::EXIT_SUCCESS
 }
 
+/// 🌟
 #[cfg(not(feature = "alloc"))]
 #[macro_export]
 macro_rules! no_problem {
@@ -82,6 +83,7 @@ macro_rules! no_problem {
     };
 }
 
+/// 🌟
 #[cfg(all(feature = "alloc", not(feature = "std")))]
 #[macro_export]
 macro_rules! no_problem {
@@ -98,6 +100,7 @@ macro_rules! no_problem {
     };
 }
 
+/// 🌟
 #[cfg(feature = "std")]
 #[macro_export]
 macro_rules! no_problem {
@@ -114,7 +117,8 @@ macro_rules! no_problem {
 
         // Provide a prelude.
         use ::alloc::{format, vec};
-        use $crate::std::{self, prelude::rust_2021::*};
+        use $crate::prelude::rust_2021::*;
+        use $crate::{self as std};
         use $crate::{eprint, eprintln, print, println};
     };
 }
@@ -124,5 +128,28 @@ mod init;
 mod stack_overflow;
 
 // Provide a std-like API.
+
 #[cfg(feature = "std")]
-pub mod std;
+mod macros;
+
+#[cfg(feature = "std")]
+pub mod env;
+#[cfg(feature = "std")]
+pub mod io;
+#[cfg(feature = "std")]
+pub mod prelude;
+#[cfg(feature = "std")]
+pub mod sync;
+#[cfg(feature = "std")]
+#[cfg(feature = "thread")]
+pub mod thread;
+
+pub use core::*;
+#[cfg(feature = "alloc")]
+pub use crate_alloc::{
+    alloc, borrow, boxed, collections, ffi, fmt, rc, slice, str, string, task, vec,
+};
+
+mod sealed {
+    pub trait Sealed {}
+}
