@@ -118,5 +118,5 @@ which might be inspired by this, please reach out!
 [tiny-std]: https://github.com/MarcusGrass/tiny-std
 [veneer]: https://crates.io/crates/veneer
 [mustang]: https://github.com/sunfishcode/mustang
-[eyra]: https://github.com/sunfishcode/eyra
+[eyra]: https://github.com/sunfishcode/c-ward/tree/main/eyra
 [relibc]: https://gitlab.redox-os.org/redox-os/relibc/
