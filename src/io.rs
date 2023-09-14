@@ -106,6 +106,7 @@ impl Stdout {
 }
 
 impl Write for Stdout {
+    #[cfg_attr(feature = "std", allow(unused_unsafe))]
     fn write(&mut self, buf: &[u8]) -> Result<usize> {
         rustix::io::write(unsafe { rustix::stdio::stdout() }, buf)
     }
@@ -170,6 +171,7 @@ impl Stderr {
 }
 
 impl Write for Stderr {
+    #[cfg_attr(feature = "std", allow(unused_unsafe))]
     fn write(&mut self, buf: &[u8]) -> Result<usize> {
         rustix::io::write(unsafe { rustix::stdio::stderr() }, buf)
     }

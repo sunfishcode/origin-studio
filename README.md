@@ -19,7 +19,7 @@ At this time, it only works on Linux (x86-64, aarch64, riscv64, 32-bit x86),
 requires Rust nightly, lacks full `std` compatibility, and is overall
 experimental. But it supports threads and stuff.
 
-Quick start:
+## Quick start
 
 In an empty directory, on Linux, with Rust nightly, run these commands:
 ```sh
@@ -94,9 +94,9 @@ program, using origin.
 Other alternative implementations of std include [steed], [tiny-std] and
 [veneer].
 
-[mustang] is a crate that uses origin to build a libc implementation that can
-slide underneath existing std builds, rather than having its own std
-implementation.
+[mustang] and [eyra] are crates that use origin to build a libc implementation
+that can slide underneath existing std builds, rather than having their own std
+implementations.
 
 [relibc] also includes a Rust implementation of program and thread startup and
 shutdown.
@@ -118,4 +118,5 @@ which might be inspired by this, please reach out!
 [tiny-std]: https://github.com/MarcusGrass/tiny-std
 [veneer]: https://crates.io/crates/veneer
 [mustang]: https://github.com/sunfishcode/mustang
+[eyra]: https://github.com/sunfishcode/eyra
 [relibc]: https://gitlab.redox-os.org/redox-os/relibc/
