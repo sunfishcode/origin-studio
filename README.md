@@ -2,7 +2,7 @@
   <h1><code>origin-studio</code></h1>
 
   <p>
-    <strong>An alternative `std`-like implementation built on origin</strong>
+    <strong>An alternative `std`-like implementation built on Origin</strong>
   </p>
 
   <p>
@@ -13,7 +13,7 @@
   </p>
 </div>
 
-origin-stdio is an alternative [`std`]-like implementation built on [`origin`].
+Origin Stdio is an alternative [`std`]-like implementation built on [`origin`].
 
 At this time, it only works on Linux (x86-64, aarch64, riscv64, 32-bit x86),
 requires Rust nightly, lacks full `std` compatibility, and is overall
@@ -37,7 +37,7 @@ Yes, you might say, I could have already done that, with just the first and
 last commands. But this version uses `origin` to start and stop the program,
 and [`rustix`] to do the printing.
 
-And beyond that, origin-studio uses `origin` to start and stop threads,
+And beyond that, Origin Studio uses `origin` to start and stop threads,
 [`rustix-futex-sync`] and [`lock_api`] to do locking for threads,
 [`rustix-dlmalloc`] to do memory allocation, and [`unwinding`] to do stack
 unwinding, so it doesn't use libc at all.
@@ -72,17 +72,17 @@ program itself.
 
 This inserts three lines to the top of src/main.rs:
  - `#![no_std]`, which disables the use of Rust's standard library
-   implementation, since origin-studio provides its own implementation that
+   implementation, since Origin Studio provides its own implementation that
    using rustix and origin.
  - `#![no_main]`, which tells Rust to disable its code that calls the user's
-   `main` function, since `origin-studio` will be handling that.
+   `main` function, since Origin Studio will be handling that.
  - `origin_studio::no_problem!()` inserts code to set up a Rust panic handler,
    and optionally a global allocator (with the "alloc" feature).
 
 > cargo run --quiet
 
 This runs the program, which will be started by origin, prints "Hello, world!"
-using origin-studio's `println!` macro, which uses origin-studio's
+using Origin Studio's `println!` macro, which uses Origin Studio's
 `std::io::stdout()` and `std::io::Write` and `rustix-futex-sync`'s `Mutex` to
 do the locking, and `rustix` to do the actual I/O system call, and ends the
 program, using origin.
