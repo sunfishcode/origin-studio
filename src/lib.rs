@@ -139,6 +139,7 @@ pub mod io;
 #[cfg(feature = "std")]
 pub mod prelude;
 #[cfg(feature = "std")]
+#[cfg(feature = "thread")]
 pub mod sync;
 #[cfg(feature = "std")]
 #[cfg(feature = "thread")]
