@@ -1,5 +1,5 @@
 <div align="center">
-  <h1><code>origin-studio</code></h1>
+  <h1>Origin Studio</h1>
 
   <p>
     <strong>An alternative `std`-like implementation built on Origin</strong>
