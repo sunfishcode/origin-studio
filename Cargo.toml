@@ -39,3 +39,7 @@ log = ["origin/log", "atomic-dbg", "origin/atomic-dbg"]
 
 # Enable Rust's stack overflow reporting code.
 stack-overflow = ["rustix/mm"]
+
+# Enable highly experimental support for performing startup-time relocations,
+# needed to support statically-linked PIE executables.
+experimental-relocate = ["origin/experimental-relocate"]
