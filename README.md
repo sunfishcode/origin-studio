@@ -87,7 +87,7 @@ using origin-studio's `println!` macro, which uses origin-studio's
 do the locking, and `rustix` to do the actual I/O system call, and ends the
 program, using origin.
 
-[rustix-futex-sync]: https://github.com/sunfishcode/rustix-futex-sync
+[rustix-futex-sync]: https://github.com/sunfishcode/rustix-futex-sync#readme
 
 ## Similar crates
 
@@ -108,8 +108,8 @@ seeing this grow into something specific, or interested in seeing projects
 which might be inspired by this, please reach out!
 
 [`std`]: https://doc.rust-lang.org/stable/std/
-[`origin`]: https://docs.rs/origin/latest/origin/
-[`rustix`]: https://docs.rs/rustix/latest/rustix/
+[`origin`]: https://github.com/sunfishcode/origin#readme
+[`rustix`]: https://github.com/bytecodealliance/rustix#readme
 [`rustix-futex-sync`]: https://docs.rs/rustix-futex-sync/latest/rustix_futex_sync/
 [`rustix-dlmalloc`]: https://docs.rs/rustix-dlmalloc/latest/rustix_dlmalloc/
 [`lock_api`]: https://docs.rs/lock_api/latest/lock_api/
@@ -117,6 +117,6 @@ which might be inspired by this, please reach out!
 [steed]: https://github.com/japaric/steed
 [tiny-std]: https://github.com/MarcusGrass/tiny-std
 [veneer]: https://crates.io/crates/veneer
-[mustang]: https://github.com/sunfishcode/mustang
-[eyra]: https://github.com/sunfishcode/c-ward/tree/main/eyra
+[mustang]: https://github.com/sunfishcode/mustang#readme
+[eyra]: https://github.com/sunfishcode/c-ward/tree/main/eyra#readme
 [relibc]: https://gitlab.redox-os.org/redox-os/relibc/
