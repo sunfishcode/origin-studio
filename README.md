@@ -94,7 +94,7 @@ program, using origin.
 Other alternative implementations of std include [steed], [tiny-std] and
 [veneer].
 
-[mustang] and [eyra] are crates that use origin to build a libc implementation
+[Mustang] and [Eyra] are crates that use origin to build a libc implementation
 that can slide underneath existing std builds, rather than having their own std
 implementations.
 
@@ -117,6 +117,6 @@ which might be inspired by this, please reach out!
 [steed]: https://github.com/japaric/steed
 [tiny-std]: https://github.com/MarcusGrass/tiny-std
 [veneer]: https://crates.io/crates/veneer
-[mustang]: https://github.com/sunfishcode/mustang#readme
-[eyra]: https://github.com/sunfishcode/c-ward/tree/main/eyra#readme
+[Mustang]: https://github.com/sunfishcode/mustang#readme
+[Eyra]: https://github.com/sunfishcode/eyra#readme
 [relibc]: https://gitlab.redox-os.org/redox-os/relibc/
