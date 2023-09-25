@@ -21,6 +21,8 @@ atomic-dbg = { version = "0.1.8", default-features = false, optional = true }
 
 [dev-dependencies]
 compiler_builtins = { version = "0.1.101", features = ["mem"] }
+libc = { version = "0.2.148", default-features = false }
+errno = { version = "0.3.3", default-features = false }
 
 [features]
 default = ["std", "thread", "stack-overflow"]
