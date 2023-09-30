@@ -3,8 +3,7 @@
 #![feature(lang_items)]
 #![feature(core_intrinsics)]
 #![feature(strict_provenance)]
-#![deny(fuzzy_provenance_casts)]
-#![deny(lossy_provenance_casts)]
+#![deny(fuzzy_provenance_casts, lossy_provenance_casts)]
 #![no_std]
 
 #[cfg(feature = "alloc")]
@@ -150,7 +149,3 @@ pub use core::*;
 pub use crate_alloc::{
     alloc, borrow, boxed, collections, ffi, fmt, rc, slice, str, string, task, vec,
 };
-
-mod sealed {
-    pub trait Sealed {}
-}
