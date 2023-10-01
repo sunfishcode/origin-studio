@@ -15,7 +15,7 @@ fn main() {
                 -1 => match errno::errno().0 {
                     libc::EINTR => continue,
                     _ => panic!(),
-                }
+                },
                 n => remaining = &remaining[n as usize..],
             }
         }

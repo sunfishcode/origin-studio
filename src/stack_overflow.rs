@@ -44,8 +44,7 @@ impl Drop for Handler {
     }
 }
 
-use core::mem;
-use core::ptr;
+use core::{mem, ptr};
 
 use origin::signal::{
     sigaction, SigDfl, Sigaction, Siginfo, Signal, SA_ONSTACK, SA_SIGINFO, SIGSTKSZ, SS_DISABLE,
@@ -201,8 +200,9 @@ unsafe fn drop_handler(data: *mut c_void) {
             ss_size: SIGSTKSZ as _,
         };
         let _ = sigaltstack(Some(stack));
-        // We know from `get_stackp` that the alternate stack we installed is part of a mapping
-        // that started one page earlier, so walk back a page and unmap from there.
+        // We know from `get_stackp` that the alternate stack we installed is part of a
+        // mapping that started one page earlier, so walk back a page and unmap
+        // from there.
         let _ = munmap(data.sub(page_size()), SIGSTKSZ + page_size());
     }
 }

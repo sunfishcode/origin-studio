@@ -2,8 +2,7 @@
 
 use core::ffi::CStr;
 use core::ptr::null_mut;
-use core::slice;
-use core::str;
+use core::{slice, str};
 
 pub(crate) struct MainArgs {
     pub(crate) argc: i32,

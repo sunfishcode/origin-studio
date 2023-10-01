@@ -117,8 +117,7 @@ macro_rules! no_problem {
         // Provide a prelude.
         use ::alloc::{format, vec};
         use $crate::prelude::rust_2021::*;
-        use $crate::{self as std};
-        use $crate::{eprint, eprintln, print, println};
+        use $crate::{self as std, eprint, eprintln, print, println};
     };
 }
 
