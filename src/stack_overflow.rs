@@ -97,7 +97,7 @@ unsafe extern "C" fn signal_handler(signum: Signal, info: *mut Siginfo, _data: *
         rtprintpanic!(
             "\nthread '{}' has overflowed its stack\n",
             rustix::thread::name()
-                .map(|c_str| crate_alloc::format!("{:?}", c_str))
+                .map(|c_str| alloc_crate::format!("{:?}", c_str))
                 .unwrap_or("<unknown>".into())
         );
         rtabort!("stack overflow");

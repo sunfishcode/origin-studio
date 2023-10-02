@@ -7,7 +7,7 @@
 #![no_std]
 
 #[cfg(feature = "alloc")]
-extern crate alloc as crate_alloc;
+extern crate alloc as alloc_crate;
 
 // Ensure that origin is linked in.
 extern crate origin;
@@ -146,6 +146,6 @@ pub mod thread;
 
 pub use core::*;
 #[cfg(feature = "alloc")]
-pub use crate_alloc::{
+pub use alloc_crate::{
     alloc, borrow, boxed, collections, ffi, fmt, rc, slice, str, string, task, vec,
 };
