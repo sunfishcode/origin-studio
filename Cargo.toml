@@ -37,7 +37,7 @@ alloc = ["rustix-dlmalloc", "origin/alloc"]
 thread = ["origin/origin-thread", "rustix-futex-sync"]
 
 # Enable debug logging.
-log = ["origin/log", "atomic-dbg", "origin/atomic-dbg"]
+log = ["origin/log", "origin/atomic-dbg-logger"]
 
 # Enable Rust's stack overflow reporting code.
 stack-overflow = ["rustix/mm"]
