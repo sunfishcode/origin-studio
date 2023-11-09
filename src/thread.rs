@@ -2,7 +2,9 @@
 
 use crate::boxed::Box;
 use crate::io;
+use core::mem::forget;
 use core::num::NonZeroUsize;
+use core::ptr::{null_mut, NonNull};
 
 // Rust does't need the OS tids, it just needs unique ids, so we just use the
 // raw `Thread` value casted to `usize`.
@@ -25,7 +27,7 @@ impl JoinHandle {
         }
 
         // Don't call drop, which would detach the thread we just joined.
-        core::mem::forget(self);
+        forget(self);
 
         Ok(())
     }
@@ -43,18 +45,55 @@ pub fn spawn<F>(f: F) -> JoinHandle
 where
     F: FnOnce() + Send + 'static,
 {
-    let thread = origin::thread::create_thread(
-        Box::new(|| {
-            #[cfg(feature = "stack-overflow")]
-            let _handler = unsafe { crate::stack_overflow::Handler::new() };
+    // Pack up the closure.
+    let boxed: Box<dyn FnOnce() + Send + 'static> = Box::new(move || {
+        #[cfg(feature = "stack-overflow")]
+        let _handler = unsafe { crate::stack_overflow::Handler::new() };
 
-            f();
-            None
-        }),
-        origin::thread::default_stack_size(),
-        origin::thread::default_guard_size(),
-    )
-    .unwrap();
+        f()
+    });
+
+    // We could avoid double boxing by enabling the unstable `ptr_metadata`
+    // feature, using `.to_raw_parts()` on the box pointer, though it does
+    // also require transmuting the metadata into `*mut c_void` and back.
+    /*
+    let raw: *mut (dyn FnOnce() + Send + 'static) = Box::into_raw(boxed);
+    let (callee, metadata) = raw.to_raw_parts();
+    let args = [
+        NonNull::new(callee as _),
+        NonNull::new(unsafe { transmute(metadata) }),
+    ];
+    */
+    let boxed = Box::new(boxed);
+    let raw: *mut Box<dyn FnOnce() + Send + 'static> = Box::into_raw(boxed);
+    let args = [NonNull::new(raw.cast())];
+
+    let thread = unsafe {
+        let r = origin::thread::create_thread(
+            move |args| {
+                // Unpack and call.
+                /*
+                let (callee, metadata) = (args[0], args[1]);
+                let raw: *mut (dyn FnOnce() + Send + 'static) =
+                    ptr::from_raw_parts_mut(transmute(callee), transmute(metadata));
+                let boxed = Box::from_raw(raw);
+                boxed();
+                */
+                let raw: *mut Box<dyn FnOnce() + Send + 'static> = match args[0] {
+                    Some(raw) => raw.as_ptr().cast(),
+                    None => null_mut(),
+                };
+                let boxed: Box<Box<dyn FnOnce() + Send + 'static>> = Box::from_raw(raw);
+                (*boxed)();
+
+                None
+            },
+            &args,
+            origin::thread::default_stack_size(),
+            origin::thread::default_guard_size(),
+        );
+        r.unwrap()
+    };
 
     JoinHandle(Thread(thread))
 }
