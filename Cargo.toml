@@ -1,6 +1,6 @@
 [package]
 name = "origin-studio"
-version = "0.8.4"
+version = "0.8.5"
 authors = [
     "Dan Gohman <dev@sunfishcode.online>",
 ]
