@@ -78,7 +78,7 @@ use rustix::param::page_size;
 // comments on #26458.
 unsafe extern "C" fn signal_handler(signum: Signal, info: *mut Siginfo, _data: *mut c_void) {
     let (stack_addr, _stack_size, guard_size) =
-        origin::thread::thread_stack(origin::thread::current_thread());
+        origin::thread::stack(origin::thread::current());
     let guard_end = stack_addr.addr();
     let guard_start = guard_end - guard_size;
 

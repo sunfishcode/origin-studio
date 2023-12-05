@@ -23,7 +23,7 @@ pub struct JoinHandle(Thread);
 impl JoinHandle {
     pub fn join(self) -> io::Result<()> {
         unsafe {
-            origin::thread::join_thread(self.0 .0);
+            origin::thread::join(self.0 .0);
         }
 
         // Don't call drop, which would detach the thread we just joined.
@@ -36,7 +36,7 @@ impl JoinHandle {
 impl Drop for JoinHandle {
     fn drop(&mut self) {
         unsafe {
-            origin::thread::detach_thread(self.0 .0);
+            origin::thread::detach(self.0 .0);
         }
     }
 }
@@ -69,7 +69,7 @@ where
     let args = [NonNull::new(raw.cast())];
 
     let thread = unsafe {
-        let r = origin::thread::create_thread(
+        let r = origin::thread::create(
             move |args| {
                 // Unpack and call.
                 /*
@@ -99,7 +99,7 @@ where
 }
 
 pub fn current() -> Thread {
-    Thread(origin::thread::current_thread())
+    Thread(origin::thread::current())
 }
 
 pub(crate) struct GetThreadId;
@@ -108,7 +108,7 @@ unsafe impl rustix_futex_sync::lock_api::GetThreadId for GetThreadId {
     const INIT: Self = Self;
 
     fn nonzero_thread_id(&self) -> NonZeroUsize {
-        origin::thread::current_thread().to_raw_non_null().addr()
+        origin::thread::current().to_raw_non_null().addr()
     }
 }
 
