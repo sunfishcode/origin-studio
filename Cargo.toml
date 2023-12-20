@@ -13,7 +13,7 @@ keywords = ["linux"]
 categories = ["no-std"]
 
 [dependencies]
-origin = { version = "0.16.0", default-features = false, features = ["origin-program", "origin-signal", "origin-start"] }
+origin = { version = "0.17.0", default-features = false, features = ["origin-program", "origin-signal", "origin-start", "signal"] }
 rustix = { version = "0.38.11", default-features = false, optional = true }
 rustix-dlmalloc = { version = "0.1.0", features = ["global"], optional = true }
 rustix-futex-sync = { version = "0.2.1", features = ["atomic_usize"], optional = true }
@@ -34,7 +34,7 @@ std = ["alloc", "rustix/stdio", "rustix/fs"]
 alloc = ["rustix-dlmalloc", "origin/alloc"]
 
 # Support threads
-thread = ["origin/origin-thread", "rustix-futex-sync"]
+thread = ["origin/origin-thread", "origin/thread", "rustix-futex-sync"]
 
 # Enable debug logging.
 log = ["origin/log", "origin/atomic-dbg-logger"]
