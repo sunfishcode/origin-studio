@@ -13,22 +13,21 @@ keywords = ["linux"]
 categories = ["no-std"]
 
 [dependencies]
-origin = { version = "0.20.2", default-features = false, features = ["take-charge", "origin-start", "signal"] }
+origin = { version = "0.21.1", default-features = false, features = ["take-charge", "origin-start", "signal", "nightly"] }
 rustix = { version = "0.38.11", default-features = false, optional = true }
 rustix-dlmalloc = { version = "0.1.0", features = ["global"], optional = true }
 rustix-futex-sync = { version = "0.2.1", features = ["atomic_usize"], optional = true }
 atomic-dbg = { version = "0.1.8", default-features = false, optional = true }
 
 [dev-dependencies]
-compiler_builtins = { version = "0.1.101", features = ["mem"] }
 libc = { version = "0.2.148", default-features = false }
 errno = { version = "0.3.3", default-features = false }
 
 [features]
-default = ["std", "thread", "stack-overflow"]
+default = ["std", "thread", "stack-overflow", "panic-handler", "eh-personality"]
 
 # Provide a `std`-like API.
-std = ["alloc", "rustix/stdio", "rustix/fs"]
+std = ["alloc", "rustix/stdio", "fs"]
 
 # Provide the `alloc` API.
 alloc = ["rustix-dlmalloc", "origin/alloc"]
@@ -36,12 +35,47 @@ alloc = ["rustix-dlmalloc", "origin/alloc"]
 # Support threads
 thread = ["origin/thread", "rustix-futex-sync"]
 
+# Enable highly experimental filesystem API support.
+fs = ["rustix/fs"]
+
 # Enable debug logging.
-log = ["origin/log", "origin/atomic-dbg-logger"]
+log = ["origin/log"]
 
 # Enable Rust's stack overflow reporting code.
-stack-overflow = ["rustix/mm"]
+stack-overflow = ["rustix/mm", "rustix/param", "origin/thread"]
 
 # Enable highly experimental support for performing startup-time relocations,
 # needed to support statically-linked PIE executables.
 experimental-relocate = ["origin/experimental-relocate"]
+
+# Provide a `#[lang = eh_personality]` function suitable for unwinding (for
+# no-std).
+#
+# If you know your program never unwinds and want smaller code size, use
+# "eh-personality-continue" instead.
+#
+# This is only needed in no-std builds, as std provides a personality. See
+# [the "personality" feature of the unwinding crate] for more details.
+#
+# [the "personality" feature of the unwinding crate]: https://crates.io/crates/unwinding#personality-and-other-utilities
+eh-personality = ["origin/eh-personality"]
+
+# Provide a `#[lang = eh_personality]` function that just returns
+# `CONTINUE_UNWIND` (for no-std). Use this if you know your program will never
+# unwind and don't want any extra code.
+eh-personality-continue = ["origin/eh-personality-continue"]
+
+# Provide a `#[panic_handler]` function suitable for unwinding (for no-std).
+#
+# If you know your program never panics and want smaller code size, use
+# "panic-handler-abort" instead.
+#
+# This is only needed in no-std builds, as std provides a panic handler. See
+# [the "panic-handler" feature of the unwinding crate] for more details.
+#
+# [the "panic-handler" feature of the unwinding crate]: https://crates.io/crates/unwinding#personality-and-other-utilities
+panic-handler = ["origin/panic-handler"]
+
+# Provide a `#[panic_handler]` function that just aborts (for no-std). Use this
+# if you know your program will never panic and don't want any extra code.
+panic-handler-abort = ["origin/panic-handler-abort"]

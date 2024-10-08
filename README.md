@@ -25,7 +25,6 @@ In an empty directory, on Linux, with Rust nightly, run these commands:
 ```sh
 cargo init
 cargo add origin_studio
-cargo add compiler_builtins --features=mem
 echo 'fn main() { println!("cargo:rustc-link-arg=-nostartfiles"); }' > build.rs
 sed -i '1s/^/#![no_std]\n#![no_main]\norigin_studio::no_problem!();\n\n/' src/main.rs
 cargo run --quiet
@@ -51,12 +50,6 @@ This creates a new Rust project containing a "Hello, world!" program.
 > cargo add origin_studio
 
 This adds a dependency on `origin_studio`, which is this crate.
-
-> cargo add compiler_builtins --features=mem
-
-This adds a dependency on `compiler_builtins`, which is a crate that provides
-definitions of library functions that `rustc` and `libcore` use. The `mem`
-feature enables implementations of `memcpy`, `memset`, `strlen`, and others.
 
 > echo 'fn main() { println!("cargo:rustc-link-arg=-nostartfiles"); }' > build.rs
 
