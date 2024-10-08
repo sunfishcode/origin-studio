@@ -1,7 +1,4 @@
 #![doc = include_str!("../README.md")]
-#![allow(internal_features)]
-#![feature(lang_items)]
-#![feature(core_intrinsics)]
 #![feature(strict_provenance)]
 #![deny(fuzzy_provenance_casts, lossy_provenance_casts)]
 #![no_std]
@@ -11,27 +8,6 @@ extern crate alloc as alloc_crate;
 
 // Ensure that origin is linked in.
 extern crate origin;
-
-// <https://doc.rust-lang.org/nomicon/panic-handler.html>
-#[panic_handler]
-fn panic(panic: &core::panic::PanicInfo<'_>) -> ! {
-    let _ = panic;
-
-    #[cfg(feature = "std")]
-    {
-        eprintln!("{}", panic);
-    }
-    #[cfg(all(not(feature = "std"), feature = "atomic-dbg"))]
-    {
-        atomic_dbg::eprintln!("{}", panic);
-    }
-
-    core::intrinsics::abort();
-}
-
-// <https://docs.rust-embedded.org/embedonomicon/smallest-no-std.html#eh_personality>
-#[lang = "eh_personality"]
-extern "C" fn eh_personality() {}
 
 // <https://doc.rust-lang.org/stable/std/alloc/trait.GlobalAlloc.html>
 #[cfg(feature = "alloc")]
@@ -71,8 +47,6 @@ unsafe fn origin_main(argc: i32, argv: *mut *mut u8, envp: *mut *mut u8) -> i32 
 #[macro_export]
 macro_rules! no_problem {
     () => {
-        extern crate compiler_builtins;
-
         #[doc(hidden)]
         #[no_mangle]
         extern "C" fn origin_studio_no_problem() {
@@ -88,7 +62,6 @@ macro_rules! no_problem {
 macro_rules! no_problem {
     () => {
         extern crate alloc;
-        extern crate compiler_builtins;
 
         #[doc(hidden)]
         #[no_mangle]
@@ -105,7 +78,6 @@ macro_rules! no_problem {
 macro_rules! no_problem {
     () => {
         extern crate alloc;
-        extern crate compiler_builtins;
 
         #[doc(hidden)]
         #[no_mangle]
@@ -142,6 +114,9 @@ pub mod sync;
 #[cfg(feature = "std")]
 #[cfg(feature = "thread")]
 pub mod thread;
+#[cfg(feature = "std")]
+#[cfg(feature = "fs")]
+pub mod fs;
 
 #[cfg(feature = "alloc")]
 pub use alloc_crate::{

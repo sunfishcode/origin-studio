@@ -8,6 +8,7 @@ use core::ptr::{null_mut, NonNull};
 
 // Rust does't need the OS tids, it just needs unique ids, so we just use the
 // raw `Thread` value casted to `usize`.
+#[allow(dead_code)] // TODO: obviate this
 pub struct ThreadId(usize);
 
 pub struct Thread(origin::thread::Thread);
