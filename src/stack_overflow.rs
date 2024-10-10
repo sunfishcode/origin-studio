@@ -13,7 +13,7 @@ macro_rules! rtabort {
     ($($t:tt)*) => {
         {
             rtprintpanic!("fatal runtime error: {}\n", format_args!($($t)*));
-            origin::program::abort();
+            origin::program::trap();
         }
     }
 }
