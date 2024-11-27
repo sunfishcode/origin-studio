@@ -13,7 +13,7 @@ keywords = ["linux"]
 categories = ["no-std"]
 
 [dependencies]
-origin = { version = "0.23.1", default-features = false, features = ["origin-start", "signal", "nightly"] }
+origin = { version = "0.23.3", default-features = false, features = ["origin-start", "signal", "nightly"] }
 rustix = { version = "0.38.11", default-features = false, optional = true }
 rustix-dlmalloc = { version = "0.1.0", features = ["global"], optional = true }
 rustix-futex-sync = { version = "0.2.1", features = ["atomic_usize"], optional = true }
