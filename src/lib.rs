@@ -1,6 +1,4 @@
 #![doc = include_str!("../README.md")]
-#![feature(strict_provenance)]
-#![deny(fuzzy_provenance_casts, lossy_provenance_casts)]
 #![no_std]
 
 #[cfg(feature = "alloc")]

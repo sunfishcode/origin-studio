@@ -116,7 +116,10 @@ static NEED_ALTSTACK: AtomicBool = AtomicBool::new(false);
 pub unsafe fn init() {
     for &signal in &[Signal::Segv, Signal::Bus] {
         let mut action = sigaction(signal, None).unwrap();
-        // Configure our signal handler if one is not already set.
+        // Configure our signal handler if one is not already set. Ignore
+        // the warnings about unpredictability since `SigDfl` isn't a real
+        // function anyway.
+        #[allow(unpredictable_function_pointer_comparisons)]
         if action.sa_handler_kernel == SigDfl {
             action.sa_flags = SA_SIGINFO | SA_ONSTACK;
             action.sa_handler_kernel = Some(mem::transmute(
