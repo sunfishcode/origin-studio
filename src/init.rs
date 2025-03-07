@@ -2,8 +2,8 @@
 pub(crate) fn sanitize_stdio_fds() {
     use rustix::cstr;
     use rustix::fd::BorrowedFd;
-    use rustix::fs::{fcntl_getfd, open, Mode, OFlags};
-    use rustix::io::Errno;
+    use rustix::fs::{open, Mode, OFlags};
+    use rustix::io::{fcntl_getfd, Errno};
 
     for raw_fd in 0..3 {
         let fd = unsafe { BorrowedFd::borrow_raw(raw_fd) };
@@ -20,10 +20,10 @@ pub(crate) unsafe fn store_args(argc: i32, argv: *mut *mut u8, envp: *mut *mut u
 
 pub(crate) unsafe fn reset_sigpipe() {
     use core::mem::zeroed;
-    use origin::signal::{sig_ign, sigaction, Sigaction, Signal, SA_RESTART};
+    use origin::signal::{sig_ign, sigaction, Sigaction, SigactionFlags, Signal};
 
     let mut action = zeroed::<Sigaction>();
     action.sa_handler_kernel = sig_ign();
-    action.sa_flags = SA_RESTART;
-    sigaction(Signal::Pipe, Some(action)).unwrap();
+    action.sa_flags = SigactionFlags::RESTART;
+    sigaction(Signal::PIPE, Some(action)).unwrap();
 }

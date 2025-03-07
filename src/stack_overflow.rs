@@ -47,10 +47,10 @@ impl Drop for Handler {
 use core::{mem, ptr};
 
 use origin::signal::{
-    sigaction, SigDfl, Sigaction, Siginfo, Signal, SA_ONSTACK, SA_SIGINFO, SIGSTKSZ, SS_DISABLE,
+    sigaction, Sigaction, SigactionFlags, Siginfo, Signal, SIGSTKSZ, SIG_DFL, SS_DISABLE,
 };
 use rustix::mm::{mmap_anonymous, munmap, MapFlags, ProtFlags};
-use rustix::runtime::sigaltstack;
+use rustix::runtime::kernel_sigaltstack;
 
 use core::sync::atomic::{AtomicBool, AtomicPtr, Ordering};
 use rustix::param::page_size;
@@ -77,8 +77,7 @@ use rustix::param::page_size;
 // signal handler to work. For a more detailed explanation see the
 // comments on #26458.
 unsafe extern "C" fn signal_handler(signum: Signal, info: *mut Siginfo, _data: *mut c_void) {
-    let (stack_addr, _stack_size, guard_size) =
-        origin::thread::stack(origin::thread::current());
+    let (stack_addr, _stack_size, guard_size) = origin::thread::stack(origin::thread::current());
     let guard_end = stack_addr.addr();
     let guard_start = guard_end - guard_size;
 
@@ -103,7 +102,7 @@ unsafe extern "C" fn signal_handler(signum: Signal, info: *mut Siginfo, _data: *
     } else {
         // Unregister ourselves by reverting back to the default behavior.
         let mut action: Sigaction = mem::zeroed();
-        action.sa_handler_kernel = SigDfl;
+        action.sa_handler_kernel = SIG_DFL;
         let _ = sigaction(signum, Some(action));
 
         // See comment above for why this function returns.
@@ -114,14 +113,14 @@ static MAIN_ALTSTACK: AtomicPtr<c_void> = AtomicPtr::new(ptr::null_mut());
 static NEED_ALTSTACK: AtomicBool = AtomicBool::new(false);
 
 pub unsafe fn init() {
-    for &signal in &[Signal::Segv, Signal::Bus] {
+    for &signal in &[Signal::SEGV, Signal::BUS] {
         let mut action = sigaction(signal, None).unwrap();
         // Configure our signal handler if one is not already set. Ignore
         // the warnings about unpredictability since `SigDfl` isn't a real
         // function anyway.
         #[allow(unpredictable_function_pointer_comparisons)]
-        if action.sa_handler_kernel == SigDfl {
-            action.sa_flags = SA_SIGINFO | SA_ONSTACK;
+        if action.sa_handler_kernel == SIG_DFL {
+            action.sa_flags = SigactionFlags::SIGINFO | SigactionFlags::ONSTACK;
             action.sa_handler_kernel = Some(mem::transmute(
                 signal_handler as unsafe extern "C" fn(_, _, _),
             ));
@@ -178,11 +177,11 @@ unsafe fn make_handler() -> Handler {
     if !NEED_ALTSTACK.load(Ordering::Relaxed) {
         return Handler::null();
     }
-    let mut stack = sigaltstack(None).unwrap();
+    let mut stack = kernel_sigaltstack(None).unwrap();
     // Configure alternate signal stack, if one is not already set.
     if stack.ss_flags & SS_DISABLE != 0 {
         stack = get_stack();
-        let _ = sigaltstack(Some(stack)).unwrap();
+        let _ = kernel_sigaltstack(Some(stack)).unwrap();
         Handler {
             data: stack.ss_sp as *mut c_void,
         }
@@ -202,7 +201,7 @@ unsafe fn drop_handler(data: *mut c_void) {
             // both ss_sp and ss_size should be ignored in this case.
             ss_size: SIGSTKSZ as _,
         };
-        let _ = sigaltstack(Some(stack));
+        let _ = kernel_sigaltstack(Some(stack));
         // We know from `get_stackp` that the alternate stack we installed is part of a
         // mapping that started one page earlier, so walk back a page and unmap
         // from there.
