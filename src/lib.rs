@@ -103,6 +103,9 @@ mod macros;
 #[cfg(feature = "std")]
 pub mod env;
 #[cfg(feature = "std")]
+#[cfg(feature = "fs")]
+pub mod fs;
+#[cfg(feature = "std")]
 pub mod io;
 #[cfg(feature = "std")]
 pub mod prelude;
@@ -112,9 +115,6 @@ pub mod sync;
 #[cfg(feature = "std")]
 #[cfg(feature = "thread")]
 pub mod thread;
-#[cfg(feature = "std")]
-#[cfg(feature = "fs")]
-pub mod fs;
 
 #[cfg(feature = "alloc")]
 pub use alloc_crate::{
